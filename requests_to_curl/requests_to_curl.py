@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+import re
 from copy import deepcopy
 
 import requests
@@ -42,8 +43,7 @@ def parse(request_or_response, compressed=False, verify=True, return_it=False):
         raise Exception("`parse` needs a request or response, not {}".format(type(request_or_response)))
 
     curl_string = _parse_request(request=request, compressed=compressed, verify=verify)
-    if return_it:
-        return curl_string
+    return _clean(curl_string)
 
 
 def _parse_request(request, compressed=False, verify=True):
@@ -69,3 +69,10 @@ def _parse_request(request, compressed=False, verify=True):
         if v:
             flat_parts.append(quote(v))
     return ' '.join(flat_parts)
+
+def _clean(c):
+    pattern = r"-H?\s'\b[Accept|Accept\-Encoding|User\-Agent]+:.*?\'"
+    for x in re.findall(pattern, c):
+        c = c.replace(x, '')
+
+    return c
