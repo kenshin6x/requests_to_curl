@@ -74,5 +74,6 @@ def _clean(c):
     pattern = r"-H?\s'\b[Accept|Accept\-Encoding|User\-Agent]+:.*?\'"
     for x in re.findall(pattern, c):
         c = c.replace(x, '')
+    c = " ".join(c.split())
 
     return c
